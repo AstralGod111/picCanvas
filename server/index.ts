@@ -61,26 +61,11 @@ app.use((req, res, next) => {
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
   const port = parseInt(process.env.PORT || '5000', 10);
-
-  // `reusePort` is not supported on some platforms (notably Windows / WSL).
-  // Guard it so we don't get ENOTSUP (operation not supported) errors.
-  const listenOptions: any = {
+  server.listen({
     port,
     host: "0.0.0.0",
-  };
-  if (process.platform !== "win32") {
-    listenOptions.reusePort = true;
-  }
-
-  server.on("error", (err: any) => {
-    log(`server error: ${err?.code ?? err?.message ?? err}`);
-    // if it's a listen error, exit with non-zero code so supervisors know it failed
-    if (err && (err.code === "EACCES" || err.code === "EADDRINUSE" || err.code === "ENOTSUP")) {
-      process.exit(1);
-    }
-  });
-
-  server.listen(listenOptions, () => {
+    reusePort: true,
+  }, () => {
     log(`serving on port ${port}`);
   });
 })();

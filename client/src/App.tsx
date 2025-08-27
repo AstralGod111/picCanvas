@@ -15,7 +15,7 @@ function Router() {
   );
 }
 
-function App(): JSX.Element {
+function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
